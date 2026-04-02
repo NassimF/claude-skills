@@ -2,6 +2,12 @@
 
 A personal collection of Claude Code skills — modular packages that extend Claude with specialized workflows, tools, and domain knowledge.
 
+## Available Skills
+
+- [Latex Report Generator](#latex-report-generator)
+- [Skill Creator](#skill-creator)
+- [Literature Review](#literature-review)
+
 ---
 
 ## Skills
