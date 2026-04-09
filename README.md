@@ -7,6 +7,16 @@ A personal collection of Claude Code skills — modular packages that extend Cla
 - [Latex Report Generator](#latex-report-generator)
 - [Skill Creator](#skill-creator)
 - [Literature Review](#literature-review)
+- [Paper Skills](#paper-skills)
+  - [Paper Setup](#paper-setup)
+  - [Paper Abstract](#paper-abstract)
+  - [Paper Introduction](#paper-introduction)
+  - [Paper Related Work](#paper-related-work)
+  - [Paper Methodology](#paper-methodology)
+  - [Paper Experimental Setup](#paper-experimental-setup)
+  - [Paper Results](#paper-results)
+  - [Paper Discussion](#paper-discussion)
+  - [Paper Conclusion](#paper-conclusion)
 
 ---
 
@@ -90,3 +100,128 @@ Performs structured literature reviews for a research topic or paper. Discovers 
 | Export format | `.md` / `.pdf` / `.html` | `.md` |
 
 **Dependencies:** `pip install openpyxl requests`
+
+---
+
+## Paper Skills
+
+A comprehensive suite of nine modular skills for writing research papers in LaTeX. Each skill handles one section and outputs directly to the paper repository. Designed to work with Overleaf via Git integration.
+
+**Recommended execution order:**
+1. Setup → 2. Related Work → 3. Methodology → 4. Experimental Setup → 5. Results → 6. Introduction → 7. Discussion → 8. Conclusion → 9. Abstract
+
+### Paper Setup
+
+Initializes a LaTeX project for per-section writing. Creates a `sections/` directory, generates `.tex` stub files for each section, and inserts `\input{}` lines into the main `.tex` file without modifying existing content. Idempotent—safe to run multiple times.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Repo path | Path to the LaTeX project directory |
+| Section names | Comma-separated section names (e.g., `introduction, related_work, methodology, experimental_setup, results, discussion, conclusion`) |
+
+---
+
+### Paper Abstract
+
+Generates a concise abstract (150–250 words) from a complete paper draft. Reads all other section files and synthesizes them into 5 components: problem, gap, approach, results, significance. Must be run **last**, after all other sections are complete.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| All section .tex files | Read from `sections/introduction.tex`, `related_work.tex`, `methodology.tex`, etc. |
+
+---
+
+### Paper Introduction
+
+Writes the Introduction section framing the research problem, existing solutions, the gap, and the proposed approach. Must be run after Related Work and Results are drafted, as it references the landscape and previews key findings.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Research problem | One-sentence problem statement |
+| Key gap | What existing approaches fail to address |
+| Approach description | High-level overview of the proposed method |
+| Main result | Best quantitative finding to highlight |
+| Existing sections | Reads `related_work.tex` and `results.tex` if available |
+
+---
+
+### Paper Related Work
+
+Generates the Background and Related Work section from a categorized Excel literature file. Reads papers from an Excel sheet (title, authors, year, venue, category, summary), organizes them by category, generates LaTeX with citations, and updates the BibTeX file.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Excel file path | Path to literature spreadsheet (required columns: `title`, `authors`, `year`, `venue`, `category`, `summary`, `bibtex_key`) |
+| BibTeX file path | Path to `reference.bib` |
+| Output path | Where to write `related_work.tex` (default: `sections/related_work.tex`) |
+
+---
+
+### Paper Methodology
+
+Describes the system design and technical approach. Generates subsections for problem formulation, each major component, and design decisions. Includes support for algorithms, equations, and figures with proper LaTeX conventions.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Method description | Step-by-step overview of the system |
+| Key components | Names and purposes of major modules |
+| Novel vs. borrowed | Which parts are new contributions |
+| Algorithms / equations | Pseudocode, formulas, or key math (optional) |
+| Architecture figures | Diagrams (optional) |
+
+---
+
+### Paper Experimental Setup
+
+Documents datasets, baselines, metrics, hyperparameters, and evaluation protocols. Describes **how** experiments were run, not the results. Includes tables for dense information and precise reproduction instructions.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Datasets | Name, size, split, source, what task they test |
+| Baselines | Methods to compare against |
+| Metrics | What is measured (F1, EM, Recall@k, etc.) |
+| Implementation details | Models, hardware, hyperparameters, versions |
+| Evaluation protocol | How metrics are computed |
+
+---
+
+### Paper Results
+
+Converts experimental data (CSV, JSON, or raw numbers) into formatted LaTeX tables with analysis prose. Highlights best results, provides comparisons across datasets, and contextualizes numbers with interpretation paragraphs.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Result files | CSV, JSON, or raw numbers from experiments |
+| Which tables | Comparisons, metrics, and ablation studies to show |
+| Reference tables | If reproducing a paper, cite the original tables |
+
+---
+
+### Paper Discussion
+
+Interprets results, acknowledges limitations, discusses implications, and suggests future work. Must be run after Results and Methodology are complete. Explains *why* results look the way they do and what the method cannot do.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Existing sections | Reads `results.tex` and `methodology.tex` |
+| User insights | What surprised you? Known limitations? Next steps? |
+
+---
+
+### Paper Conclusion
+
+Writes the final section: restate problem, summarize key results, and discuss broader impact. Must be run **last**, after Introduction, Results, and Discussion are complete. Mirrors contributions from the introduction.
+
+**Inputs:**
+| Input | Description |
+|---|---|
+| Existing sections | Reads `introduction.tex`, `results.tex`, `discussion.tex` |
+
