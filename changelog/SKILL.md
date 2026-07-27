@@ -7,11 +7,16 @@ description: Maintains CHANGELOG.md in the project root with date-based headings
 
 Run the bundled script from the project root, then report what was added.
 
+The script lives in this skill's own `scripts/` directory. Substitute the
+absolute path to wherever this skill is installed (e.g.
+`~/.claude/skills/changelog/scripts/update_changelog.py`) for `<skill-dir>`
+below — do not hardcode another user's home directory.
+
 ## Steps
 
-1. Run the script:
+1. Run the script (from the project root; it takes no arguments):
    ```bash
-   python /root/.claude/skills/changelog/scripts/update_changelog.py
+   python <skill-dir>/scripts/update_changelog.py
    ```
 2. Report what the script printed (dates added and commit count).
 3. If `CHANGELOG.md` is new, offer to commit it. If it already existed, leave committing to the user.
