@@ -7,6 +7,12 @@ A personal collection of Claude Code skills — modular packages that extend Cla
 - [Latex Report Generator](#latex-report-generator)
 - [Skill Creator](#skill-creator)
 - [Literature Review](#literature-review)
+- [Changelog](#changelog)
+- [Context Clear Prep](#context-clear-prep)
+- [Overleaf Setup](#overleaf-setup)
+- [Specs Development](#specs-development)
+  - [Init Specs](#init-specs)
+  - [Feature Spec](#feature-spec)
 - [Paper Skills](#paper-skills)
   - [Paper Setup](#paper-setup)
   - [Paper Abstract](#paper-abstract)
@@ -100,6 +106,97 @@ Performs structured literature reviews for a research topic or paper. Discovers 
 | Export format | `.md` / `.pdf` / `.html` | `.md` |
 
 **Dependencies:** `pip install openpyxl requests`
+
+---
+
+### Changelog
+
+Maintains a `CHANGELOG.md` in the project root with date-based headings and one bullet per commit. Run before merging to sync every commit not yet listed in the file. Existing changelog content is preserved exactly — the skill only appends what is missing.
+
+**Features:**
+- Bundled `update_changelog.py` scans git history and appends any commits not already recorded
+- Groups entries under date-based headings, one bullet per commit
+- Skips merge commits
+- Preserves all existing changelog content verbatim — never rewrites or reorders prior entries
+- Idempotent — re-running adds only new commits
+
+**Usage:**
+- Invoke with `/changelog` (or ask to "update the changelog") before merging.
+
+---
+
+### Context Clear Prep
+
+Prepares the current project for a context-window clear (compaction / wipe) so no in-progress state is lost. Audits the project, presents a summary of what needs saving, asks for approval, then applies the changes and commits.
+
+**Features:**
+- Read-only audit pass driven by `references/checklist.md` — covers specs files, git state, `.gitignore`, changelogs, and memory files
+- Collects all findings first, then presents a single summary of needed changes
+- Applies changes only after user approval, then commits
+- Ends by confirming everything is saved and safe to clear context
+
+**Usage:**
+- Invoke with `/context-clear-prep`, or say "prepare for context clear" / "clean up before compacting".
+
+---
+
+### Overleaf Setup
+
+Sets up an Overleaf project as a Git submodule inside a parent repo, wiring up the folder structure and helper scripts needed to sync between local, GitHub, and Overleaf. Also supports re-parenting an existing Overleaf submodule into a different parent repo.
+
+**Features:**
+- Creates the parent-repo layout (`overleaf/` parent with the Overleaf project as an `assets/` submodule)
+- Populates the project from a conference template zip
+- Generates helper scripts: `sync_overleaf.sh`, `push_to_overleaf.sh`, `check_status.sh`
+- `find_git_repos.py` locates candidate parent repos when re-parenting
+- Writes an instructions file documenting the sync workflow
+- Supports re-parenting: moving an existing Overleaf submodule to a new parent repo
+
+**Usage:**
+- Invoke with `/overleaf-setup`, or say "set up overleaf submodule" / "add overleaf to my project" / "re-parent overleaf".
+
+---
+
+## Specs Development
+
+A pair of skills for spec-driven development. `init-specs` lays down the project's long-lived "constitution", and `feature-spec` turns each roadmap phase into a concrete, dated working spec on its own branch.
+
+### Init Specs
+
+Creates a project's **constitution**: three core spec files under a `specs/` directory. Works for a brand-new project or to formalize an existing one. Everything is derived from a project description gathered up front.
+
+**Outputs:**
+| File | Contents |
+|---|---|
+| `specs/mission.md` | What the project is, who it's for, and why it exists |
+| `specs/tech-stack.md` | Languages, frameworks, tooling, and testing conventions |
+| `specs/roadmap.md` | Phased plan of work, each phase with a status marker |
+
+**Usage:**
+- Invoke with `/init-specs`, or say "initialize project specs" / "scaffold a specs constitution".
+
+---
+
+### Feature Spec
+
+Turns the next pending roadmap phase into a concrete working spec. Reads `specs/roadmap.md` to find the next phase (status ⏳ or unmarked), pulls context from `mission.md` and `tech-stack.md`, then asks a single grouped question covering feature name, key decisions, and validation criteria before writing anything.
+
+**Workflow:**
+1. Identify the next pending phase from `specs/roadmap.md`
+2. Ask (in one grouped call) for feature name/description, key decisions/constraints, and validation criteria
+3. Create a `feature/<name>` git branch
+4. Scaffold `specs/YYYY-MM-DD-<name>/` with three files
+
+**Outputs:**
+| File | Contents |
+|---|---|
+| `plan.md` | Numbered task groups, each with 3–6 concrete subtasks |
+| `requirements.md` | Overview, In/Out of Scope, Key Decisions, Dependencies, Open Questions |
+| `validation.md` | Automated Checks, Output Artifacts, Manual Checks, Merge Criteria |
+
+**Usage:**
+- Invoke with `/feature-spec`, or say "start the next phase" / "scaffold a feature spec".
+- Pairs with [Init Specs](#init-specs): run `init-specs` once, then `feature-spec` per phase.
 
 ---
 
